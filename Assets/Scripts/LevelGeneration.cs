@@ -1,47 +1,103 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
+public enum Directions
+{
+    Right,
+    Left,
+    Down
+}
 
 public class LevelGeneration : MonoBehaviour
 {
-    private const int XMax = 100;
-    private const int YMax = 80;
+    [SerializeField] private Transform[] startingTransform;
+    [SerializeField] private GameObject[] rooms;
+    [SerializeField] private float timeBetweenRooms;
+    [SerializeField] private float moveAmount;
 
-    private int _xMinDivision;
-    private int _yMinDivision;
-    
+    [SerializeField] private int minX;
+    [SerializeField] private int maxX;
+    [SerializeField] private int minY;
+
+    private bool _endGeneration;
+    private Directions _direction;
+
     private void Start()
     {
-        // Init Parameters
-        _xMinDivision = XMax / 4;
-        _yMinDivision = YMax / 4;
-        
         StartCoroutine(LevelGenerator());
     }
 
-    private static IEnumerator LevelGenerator()
+    private IEnumerator LevelGenerator()
     {
-//        1: start with the entire dungeon area (root node of the BSP tree)
-        while (true)
+        // Start
+        var startingPositionIndex = Random.Range(0, startingTransform.Length);
+        transform.position = startingTransform[startingPositionIndex].position;
+        _direction = (Directions) Random.Range(0, 3);
+
+        while (!_endGeneration)
         {
-            
-            
-            break;
+            // Instantiate rooms
+            var roomIndex = Random.Range(0, rooms.Length);
+            Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
+
+            yield return new WaitForSeconds(timeBetweenRooms);
+
+            Move();
         }
-//        2: divide the area along a horizontal or vertical line
+    }
 
-//        3: select one of the two new partition cells
+    private void Move()
+    {
+        switch (_direction)
+        {
+            case Directions.Right:
+                if (transform.position.x < maxX)
+                {
+                    transform.position = new Vector2(transform.position.x + moveAmount, transform.position.y);
 
-//        4: if this cell is bigger than the minimal acceptable size:
-//        5: go to step 2 (using this cell as the area to be divided)
-//        6: select the other partition cell, and go to step 4
-//        7: for every partition cell:
-//        8: create a room within the cell by randomly
-//            choosing two points (top left and bottom right) within its boundaries
-//        9: starting from the lowest layers, draw corridors to connect
-//            rooms corresponding to children of the same parent in the BSP tree
-//        10:repeat 9 until the children of the root node are connected
-        
-        yield break;
+                    if (Random.Range(0, 1) >= 0.5)
+                        _direction = Directions.Down;
+                    else
+                        _direction = Directions.Right;
+                }
+                else
+                {
+                    _direction = Directions.Down;
+                }
+
+                break;
+            case Directions.Left:
+                if (transform.position.x > minX)
+                {
+                    transform.position = new Vector2(transform.position.x - moveAmount, transform.position.y);
+                    
+                    if (Random.Range(0, 1) >= 0.5)
+                        _direction = Directions.Down;
+                    else
+                        _direction = Directions.Left;
+                }
+                else
+                {
+                    _direction = Directions.Down;
+                }
+
+                break;
+            case Directions.Down:
+                if (transform.position.y > minY)
+                {
+                    transform.position = new Vector2(transform.position.x, transform.position.y - moveAmount);
+                    _direction = (Directions) Random.Range(0, 3);
+                }
+                else
+                {
+                    _endGeneration = true;
+                }
+
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }
