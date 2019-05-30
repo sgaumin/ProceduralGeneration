@@ -12,6 +12,8 @@ public enum Directions
 
 public class LevelGeneration : MonoBehaviour
 {
+#pragma warning disable 0649 
+    
     [SerializeField] private Transform[] startingTransform;
     [SerializeField] private GameObject[] rooms;
     [SerializeField] private float timeBetweenRooms;
@@ -36,12 +38,12 @@ public class LevelGeneration : MonoBehaviour
         transform.position = startingTransform[startingPositionIndex].position;
         _direction = (Directions) Random.Range(0, 3);
 
+        // Instantiate First room
+        var roomIndex = Random.Range(0, rooms.Length);
+        Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
+
         while (!_endGeneration)
         {
-            // Instantiate rooms
-            var roomIndex = Random.Range(0, rooms.Length);
-            Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
-
             yield return new WaitForSeconds(timeBetweenRooms);
 
             Move();
@@ -50,6 +52,8 @@ public class LevelGeneration : MonoBehaviour
 
     private void Move()
     {
+        int roomIndex;
+        
         switch (_direction)
         {
             case Directions.Right:
@@ -57,7 +61,11 @@ public class LevelGeneration : MonoBehaviour
                 {
                     transform.position = new Vector2(transform.position.x + moveAmount, transform.position.y);
 
-                    if (Random.Range(0, 1) >= 0.5)
+                    // Instantiate a room
+                    roomIndex = Random.Range(0, rooms.Length);
+                    Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
+
+                    if (Random.Range(0f, 1f) >= 0.5f)
                         _direction = Directions.Down;
                     else
                         _direction = Directions.Right;
@@ -72,8 +80,12 @@ public class LevelGeneration : MonoBehaviour
                 if (transform.position.x > minX)
                 {
                     transform.position = new Vector2(transform.position.x - moveAmount, transform.position.y);
+
+                    // Instantiate a room
+                    roomIndex = Random.Range(0, rooms.Length);
+                    Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
                     
-                    if (Random.Range(0, 1) >= 0.5)
+                    if (Random.Range(0f, 1f) >= 0.5f)
                         _direction = Directions.Down;
                     else
                         _direction = Directions.Left;
@@ -88,6 +100,11 @@ public class LevelGeneration : MonoBehaviour
                 if (transform.position.y > minY)
                 {
                     transform.position = new Vector2(transform.position.x, transform.position.y - moveAmount);
+                    
+                    // Instantiate a room
+                    roomIndex = Random.Range(0, rooms.Length);
+                    Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
+                    
                     _direction = (Directions) Random.Range(0, 3);
                 }
                 else

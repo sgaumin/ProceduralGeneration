@@ -625,6 +625,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2789599210923898816}
+  - component: {fileID: 6340850730262538517}
   m_Layer: 0
   m_Name: Room LRT
   m_TagString: Untagged
@@ -670,6 +671,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6340850730262538517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2789599210923898819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd856fc00ac61be4abcb3ec7b5d1a9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 2
 --- !u!1 &2789599210929791856
 GameObject:
   m_ObjectHideFlags: 0

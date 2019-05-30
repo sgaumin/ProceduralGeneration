@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class SpawnTile : MonoBehaviour
 {
+#pragma warning disable 0649 
+    
     [SerializeField] private BoxCollider2D block;
 
     private void Start()
