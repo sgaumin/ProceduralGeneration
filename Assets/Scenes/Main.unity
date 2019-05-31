@@ -219,24 +219,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e567e897bb65bd549b4d3a354fd898b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  timeBetweenRooms: 0.2
+  minX: -10
+  maxX: 10
+  minY: -20
+  moveAmount: 10
   startingTransform:
   - {fileID: 539197061}
   - {fileID: 1074002677}
   - {fileID: 1673787965}
   - {fileID: 414674688}
-  rooms:
+  roomTemplatesMainPath:
   - {fileID: 3458418793360312287, guid: 498109fbdb1228a4391a2b2bc19530d2, type: 3}
   - {fileID: 4911132342971947897, guid: 8589dfce81b78554188b272ffb50b9e4, type: 3}
   - {fileID: 6340850730262538517, guid: 46f075d58abf0cc419b378949797a5f4, type: 3}
   - {fileID: 876616906609818139, guid: 260bc6db4245fd64c98006c3c1633aaf, type: 3}
-  roomLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  timeBetweenRooms: 0.2
-  moveAmount: 10
-  minX: -10
-  maxX: 10
-  minY: -20
+  roomTemplatesOthers:
+  - {fileID: 3458418793360312287, guid: 498109fbdb1228a4391a2b2bc19530d2, type: 3}
+  - {fileID: 4911132342971947897, guid: 8589dfce81b78554188b272ffb50b9e4, type: 3}
+  - {fileID: 6340850730262538517, guid: 46f075d58abf0cc419b378949797a5f4, type: 3}
+  - {fileID: 876616906609818139, guid: 260bc6db4245fd64c98006c3c1633aaf, type: 3}
 --- !u!4 &84650978
 Transform:
   m_ObjectHideFlags: 0

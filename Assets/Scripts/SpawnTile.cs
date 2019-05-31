@@ -1,15 +1,18 @@
 ﻿using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpawnTile : MonoBehaviour
 {
 #pragma warning disable 0649 
 
-    [SerializeField] private BoxCollider2D block;
+    [SerializeField] private GameObject[] block;
 
     private void Start()
     {
-        var tempBlock = Instantiate(block.gameObject, transform.position, Quaternion.identity);
+        var randIndex = Random.Range(0, block.Length);
+
+        var tempBlock = Instantiate(block[randIndex], transform.position, Quaternion.identity);
         tempBlock.transform.SetParent(transform);
     }
 }
