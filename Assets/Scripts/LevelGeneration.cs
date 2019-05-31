@@ -3,19 +3,14 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum Directions
-{
-    Right,
-    Left,
-    Down
-}
 
 public class LevelGeneration : MonoBehaviour
 {
 #pragma warning disable 0649 
-    
+
     [SerializeField] private Transform[] startingTransform;
-    [SerializeField] private GameObject[] rooms;
+    [SerializeField] private Room[] rooms;
+    [SerializeField] private LayerMask roomLayer;
     [SerializeField] private float timeBetweenRooms;
     [SerializeField] private float moveAmount;
 
@@ -23,8 +18,9 @@ public class LevelGeneration : MonoBehaviour
     [SerializeField] private int maxX;
     [SerializeField] private int minY;
 
-    private bool _endGeneration;
     private Directions _direction;
+    private bool _endGeneration;
+    private int _downMove = 0;
 
     private void Start()
     {
@@ -52,8 +48,9 @@ public class LevelGeneration : MonoBehaviour
 
     private void Move()
     {
-        int roomIndex;
-        
+        var roomIndex = 0;
+
+
         switch (_direction)
         {
             case Directions.Right:
@@ -69,6 +66,8 @@ public class LevelGeneration : MonoBehaviour
                         _direction = Directions.Down;
                     else
                         _direction = Directions.Right;
+
+                    _downMove = 0;
                 }
                 else
                 {
@@ -84,11 +83,13 @@ public class LevelGeneration : MonoBehaviour
                     // Instantiate a room
                     roomIndex = Random.Range(0, rooms.Length);
                     Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
-                    
+
                     if (Random.Range(0f, 1f) >= 0.5f)
                         _direction = Directions.Down;
                     else
                         _direction = Directions.Left;
+
+                    _downMove = 0;
                 }
                 else
                 {
@@ -99,13 +100,39 @@ public class LevelGeneration : MonoBehaviour
             case Directions.Down:
                 if (transform.position.y > minY)
                 {
+                    Collider2D roomDetection = Physics2D.OverlapCircle(transform.position, 1, roomLayer);
+                    if (roomDetection.GetComponent<Room>().roomType != RoomTypes.LRB &&
+                        roomDetection.GetComponent<Room>().roomType != RoomTypes.LRTB)
+                    {
+                        roomDetection.GetComponent<Room>().RoomDestruction();
+
+                        roomIndex = Random.Range(0, rooms.Length);
+                        if (_downMove == 0)
+                        {
+                            while (rooms[roomIndex].roomType != RoomTypes.LRB &&
+                                   rooms[roomIndex].roomType != RoomTypes.LRTB)
+                                roomIndex = Random.Range(0, rooms.Length);
+                        }
+                        else
+                        {
+                            while (rooms[roomIndex].roomType != RoomTypes.LRTB)
+                                roomIndex = Random.Range(0, rooms.Length);
+                        }
+
+                        Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
+                    }
+
                     transform.position = new Vector2(transform.position.x, transform.position.y - moveAmount);
-                    
+
                     // Instantiate a room
                     roomIndex = Random.Range(0, rooms.Length);
+                    while (rooms[roomIndex].roomType != RoomTypes.LRT && rooms[roomIndex].roomType != RoomTypes.LRTB)
+                        roomIndex = Random.Range(0, rooms.Length);
+
                     Instantiate(rooms[roomIndex], transform.position, Quaternion.identity);
-                    
+
                     _direction = (Directions) Random.Range(0, 3);
+                    _downMove++;
                 }
                 else
                 {
